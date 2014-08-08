@@ -1,0 +1,36 @@
+{
+  "name": "level-random",
+  "version": "0.0.0",
+  "description": "read randomly from leveldb",
+  "main": "index.js",
+  "scripts": {
+    "test": "tap --tap test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/michaelnisi/level-random.git"
+  },
+  "keywords": [
+    "leveldb",
+    "random",
+    "read",
+    "transform",
+    "stream"
+  ],
+  "author": "Michael Nisi <michael.nisi@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/michaelnisi/level-random/issues"
+  },
+  "homepage": "https://github.com/michaelnisi/level-random",
+  "dependencies": {
+    "levelup": "0.18.x"
+  },
+  "devDependencies": {
+    "tap": "0.4.x",
+    "rimraf": "2.2.x"
+  },
+  "engines": {
+    "node": ">=0.10"
+  }
+}
