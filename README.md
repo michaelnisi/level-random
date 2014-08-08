@@ -8,7 +8,7 @@ Occasionally you have to read randomly from [LevelDB](http://leveldb.org/).
 
 ```js
 var levelup = require('levelup')
-  , random = require('./')
+  , random = require('level-random')
   ;
 
 function read (db) {
@@ -22,10 +22,10 @@ function read (db) {
   values.on('error', function (er) {
     console.error(er)
   })
-  var keys = ['a', 'b', 'c']
+  var keys = ['a', 'b']
   function write () {
     while (keys.length && values.write(keys.shift())) {}
-    if (keys.length) values.on('drain', write)
+    keys.length ? values.on('drain', write) : values.end('c')
   }
   write()
 }

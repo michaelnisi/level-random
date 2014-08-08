@@ -1,10 +1,10 @@
 {
   "name": "level-random",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "read randomly from leveldb",
   "main": "index.js",
   "scripts": {
-    "test": "tap --tap test/*.js"
+    "test": "tap --tap test.js"
   },
   "repository": {
     "type": "git",
@@ -27,10 +27,11 @@
     "levelup": "0.18.x"
   },
   "devDependencies": {
-    "tap": "0.4.x",
-    "rimraf": "2.2.x"
+    "event-stream": "3.1.x",
+    "rimraf": "2.2.x",
+    "tap": "0.4.x"
   },
   "engines": {
-    "node": ">=0.10"
+    "node": "0.10.x"
   }
 }

@@ -1,7 +1,8 @@
 
-var test = require('tap').test
+var es = require('event-stream')
+  , test = require('tap').test
   , levelup = require('levelup')
-  , random = require('../')
+  , random = require('./')
   , rimraf = require('rimraf')
   ;
 
@@ -45,6 +46,16 @@ test('read', function (t) {
     keys.length ? values.on('drain', write) : values.end()
   }
   write()
+})
+
+test('pipe', function (t) {
+  t.plan(1)
+  es.readArray(['a', 'b', 'c'])
+    .pipe(random({ db:db }))
+    .pipe(es.writeArray(function (er, values) {
+      t.is(values.length, 3)
+      t.end()
+    }))
 })
 
 function teardown (t) {
