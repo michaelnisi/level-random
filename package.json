@@ -1,6 +1,6 @@
 {
   "name": "level-random",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "read randomly from leveldb",
   "main": "index.js",
   "scripts": {
@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "event-stream": "3.1.x",
+    "leveldown": "0.10.x",
     "rimraf": "2.2.x",
     "tap": "0.4.x"
   },

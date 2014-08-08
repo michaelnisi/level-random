@@ -68,8 +68,8 @@ module.exports = function (opts())
 
 ## Installation
 
-[![NPM](https://nodei.co/npm/level-values.svg)](https://npmjs.org/package/level-values)
+[![NPM](https://nodei.co/npm/level-random.svg)](https://npmjs.org/package/level-random)
 
 ## License
 
-[ICS License](https://github.com/michaelnisi/level-values/blob/master/LICENSE)
+[ICS License](https://github.com/michaelnisi/level-random/blob/master/LICENSE)
