@@ -2,6 +2,7 @@
 # level-random - read randomly
 
 Occasionally you have to read randomly from [LevelDB](http://leveldb.org/). 
+
 [![Build Status](https://secure.travis-ci.org/michaelnisi/level-random.svg)](http://travis-ci.org/michaelnisi/level-random) [![David DM](https://david-dm.org/michaelnisi/level-random.svg)](http://david-dm.org/michaelnisi/level-random)
 
 ## Usage
@@ -44,7 +45,7 @@ levelup('/tmp/level-random.db', function (er, db) {
 
 ### db()
 
-The mandatory [levelup](https://github.com/rvagg/node-levelup) instance.
+The mandatory [LevelUP](https://github.com/rvagg/node-levelup) instance.
 
 ### opts()
 
@@ -52,18 +53,20 @@ The options for the level-random Transform stream.
 
 ```js
 - db db() | undefined
+- decodeStrings Boolean | true
+- encoding String | undefined
 - fillCache Boolean | true
 - highWaterMark Number | 16000
-- decodeStrings Boolean | true
 - objectMode Boolean | false
 ```
 
 ## exports
 
-level-random exports a sole function that returns a Transform stream. 
+level-random exports a sole function that returns a Transform stream which transforms keys to values. 
 
 ```js
-module.exports = function (opts())
+var lr = require('level-random')
+lr(opts())
 ```
 
 ## Installation
