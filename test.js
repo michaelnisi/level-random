@@ -3,7 +3,7 @@ var es = require('event-stream')
   , fs = require('fs')
   , test = require('tap').test
   , levelup = require('levelup')
-  , random = require('./')
+  , lr = require('./')
   , rimraf = require('rimraf')
   ;
 
@@ -25,7 +25,7 @@ test('setup', function (t) {
 
 test('read', function (t) {
   t.plan(1)
-  var values = random({ db:db })
+  var values = lr({ db:db })
     , found = []
     ;
   values.on('readable', function () {
@@ -52,7 +52,7 @@ test('read', function (t) {
 test('pipe', function (t) {
   t.plan(1)
   es.readArray(['a', 'b', 'c'])
-    .pipe(random({ db:db, encoding:'utf8' }))
+    .pipe(lr({ db:db, encoding:'utf8' }))
     .pipe(es.writeArray(function (er, found) {
       var wanted = ['A', 'B', 'C']
       t.deepEqual(found, wanted)

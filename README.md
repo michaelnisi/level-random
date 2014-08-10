@@ -1,7 +1,7 @@
 
 # level-random - read randomly
 
-Occasionally you have to read randomly from [LevelDB](http://leveldb.org/). 
+The level-random [Node.js](http://nodejs.org/) module implements a [Transform](http://nodejs.org/api/stream.html#stream_class_stream_transform_1) stream to read values for random keys in an [LevelUP](https://github.com/rvagg/node-levelup) instance.
 
 [![Build Status](https://secure.travis-ci.org/michaelnisi/level-random.svg)](http://travis-ci.org/michaelnisi/level-random) [![David DM](https://david-dm.org/michaelnisi/level-random.svg)](http://david-dm.org/michaelnisi/level-random)
 
@@ -9,11 +9,11 @@ Occasionally you have to read randomly from [LevelDB](http://leveldb.org/).
 
 ```js
 var levelup = require('levelup')
-  , random = require('level-random')
+  , lr = require('level-random')
   ;
 
 function read (db) {
-  var values = random({ db: db })
+  var values = lr({ db: db })
   values.on('readable', function () {
     var chunk
     while (null !== (chunk = values.read())) {
@@ -68,6 +68,8 @@ level-random exports a sole function that returns a Transform stream which trans
 var lr = require('level-random')
 lr(opts())
 ```
+
+Although, in general, we leverage the lexicographical sort order of [LevelDB](http://leveldb.org/) keys (to stream ranges), occasionally we encounter the oddball use case which requires to read randomly from the store. To read a bunch of unsorted values for random keys, this module might be useful.
 
 ## Installation
 
