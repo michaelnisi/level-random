@@ -69,7 +69,7 @@ var lr = require('level-random')
 lr(opts())
 ```
 
-Although, in general, we leverage the lexicographical sort order of [LevelDB](http://leveldb.org/) keys (to stream ranges), occasionally we encounter the oddball use case which requires to read randomly from the store. To read a bunch of unsorted values for random keys, this module might be useful.
+Although, in general, we leverage the lexicographical sort order of [LevelDB](http://leveldb.org/) keys (to stream ranges), occasionally we encounter the oddball use case which requires to read randomly from the store. To read a bunch of unsorted values for random keys this module might be useful.
 
 ## Installation
 
