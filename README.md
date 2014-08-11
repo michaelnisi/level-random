@@ -62,7 +62,7 @@ The options for the level-random Transform stream.
 
 ## exports
 
-level-random exports a sole function that returns a Transform stream which transforms keys to values. 
+level-random exports a sole function that returns a Transform stream which transforms keys to values.
 
 ```js
 var lr = require('level-random')
@@ -73,8 +73,12 @@ Although, in general, we leverage the lexicographical sort order of [LevelDB](ht
 
 ## Installation
 
-[![NPM](https://nodei.co/npm/level-random.svg)](https://npmjs.org/package/level-random)
+With [npm](https://npmjs.org/package/level-random) do:
+
+```
+$ npm install level-random
+```
 
 ## License
 
-[ICS License](https://github.com/michaelnisi/level-random/blob/master/LICENSE)
+[MIT License](https://github.com/michaelnisi/level-random/blob/master/LICENSE)
