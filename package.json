@@ -1,6 +1,6 @@
 {
   "name": "level-random",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "read randomly from leveldb",
   "main": "index.js",
   "scripts": {
@@ -18,7 +18,7 @@
     "stream"
   ],
   "author": "Michael Nisi <michael.nisi@gmail.com>",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/michaelnisi/level-random/issues"
   },
