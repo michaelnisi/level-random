@@ -1,15 +1,13 @@
 
 var es = require('event-stream')
-  , fs = require('fs')
-  , test = require('tap').test
-  , levelup = require('levelup')
-  , lr = require('./')
-  , rimraf = require('rimraf')
-  ;
+var fs = require('fs')
+var levelup = require('levelup')
+var lr = require('./')
+var rimraf = require('rimraf')
+var test = require('tap').test
 
 var loc = '/tmp/random-' + Math.floor(Math.random() * (1<<24))
-  , db = levelup(loc)
-  ;
+var db = levelup(loc)
 
 function puts () {
   return ['a', 'b', 'c'].map(function (key) {
@@ -24,34 +22,31 @@ test('setup', function (t) {
 })
 
 test('read', function (t) {
-  t.plan(1)
-  var values = lr({ db:db })
-    , found = []
-    ;
+  t.plan(2)
+  var keys = ['a', 'b', 'x', 'c']
+  var found = []
+  var errors = []
+  var values = lr({ db:db, errorIfNotFound: true })
   values.on('readable', function () {
     var chunk
-    while (null !== (chunk = values.read())) {
-      found.push(chunk)
-    }
+    while (null !== (chunk = values.read())) { found.push(chunk) }
+    keys.length ? values.write(keys.shift()) : values.end()
   })
   values.on('error', function (er) {
-    t.ok(false)
+    errors.push(er)
+    values.resume()
   })
   values.on('finish', function () {
     t.is(found.length, 3)
+    t.is(errors.length, 1)
     t.end()
   })
-  var keys = ['a', 'b', 'c']
-  function write () {
-    while (keys.length && values.write(keys.shift())) {}
-    keys.length ? values.on('drain', write) : values.end()
-  }
-  write()
+  values.write(keys.shift())
 })
 
 test('pipe', function (t) {
   t.plan(1)
-  es.readArray(['a', 'b', 'c'])
+  es.readArray(['x', 'a', 'b', 'c'])
     .pipe(lr({ db:db, encoding:'utf8' }))
     .pipe(es.writeArray(function (er, found) {
       var wanted = ['A', 'B', 'C']

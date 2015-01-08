@@ -2,12 +2,12 @@
 module.exports = exports = Random
 
 var stream = require('stream')
-  , util = require('util')
-  ;
+var util = require('util')
 
 function defaults (opts) {
   opts = opts || Object.create(null)
   opts.fillCache = opts.fillCache || true
+  opts.errorIfNotFound = opts.errorIfNotFound || false
   return opts
 }
 
@@ -25,7 +25,11 @@ function Random (opts) {
 Random.prototype._transform = function (chunk, enc, cb) {
   var me = this
   this.db.get(chunk, this.opts, function (er, value) {
-    if (!er) me.push(value)
+    if (!er) {
+      me.push(value)
+    } else if (!me.errorIfNotFound && er.notFound) {
+      er = null
+    }
     cb(er)
   })
 }

@@ -1,16 +1,15 @@
 
 # level-random - read randomly
 
-The level-random [Node.js](http://nodejs.org/) module implements a [Transform](http://nodejs.org/api/stream.html#stream_class_stream_transform_1) stream to read values for random keys in an [LevelUP](https://github.com/rvagg/node-levelup) instance.
+The **level-random** [Node.js](http://nodejs.org/) module implements a [Transform](http://nodejs.org/api/stream.html#stream_class_stream_transform_1) stream to read values for random keys in an [LevelUP](https://github.com/rvagg/node-levelup) instance.
 
-[![Build Status](https://secure.travis-ci.org/michaelnisi/level-random.svg)](http://travis-ci.org/michaelnisi/level-random) [![David DM](https://david-dm.org/michaelnisi/level-random.svg)](http://david-dm.org/michaelnisi/level-random)
+[![Build Status](https://secure.travis-ci.org/michaelnisi/level-random.svg)](http://travis-ci.org/michaelnisi/level-random)
 
 ## Usage
 
 ```js
 var levelup = require('levelup')
-  , lr = require('level-random')
-  ;
+var lr = require('level-random')
 
 function read (db) {
   var values = lr({ db: db })
@@ -43,26 +42,17 @@ levelup('/tmp/level-random.db', function (er, db) {
 
 ## types
 
-### db()
-
-The mandatory [LevelUP](https://github.com/rvagg/node-levelup) instance.
-
 ### opts()
 
-The options for the level-random Transform stream.
+`Object` passed to Transform stream constructor.
 
-```js
-- db db() | undefined
-- decodeStrings Boolean | true
-- encoding String | undefined
-- fillCache Boolean | true
-- highWaterMark Number | 16000
-- objectMode Boolean | false
-```
+- `db` The mandatory [LevelUP](https://github.com/rvagg/node-levelup) instance.
+- `errorIfNotFound` Set this `Boolean` `true` to error if a key is not found; defaults `false`
+- `fillCache` Set this `Boolean` `false` to not fill LevelDB's LRU-cache; defaults `true`
 
 ## exports
 
-level-random exports a sole function that returns a Transform stream which transforms keys to values.
+**level-random** exports a sole function that returns a Transform stream which transforms keys to values.
 
 ```js
 var lr = require('level-random')

@@ -1,10 +1,9 @@
 
 var levelup = require('levelup')
-  , random = require('./')
-  ;
+var lr = require('./')
 
 function read (db) {
-  var values = random({ db: db })
+  var values = lr({ db: db })
   values.on('readable', function () {
     var chunk
     while (null !== (chunk = values.read())) {
@@ -24,8 +23,8 @@ function read (db) {
 
 levelup('/tmp/level-random.db', function (er, db) {
   db.batch([
-    { type: 'put', key: 'a', value: 'A' }
-  , { type: 'put', key: 'b', value: 'B' }
+    { type: 'put', key: 'a', value: 'hey' }
+  , { type: 'put', key: 'b', value: 'you' }
   ], function (er) {
     read(db)
   })
