@@ -1,6 +1,6 @@
 {
   "name": "level-random",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "read randomly from leveldb",
   "main": "index.js",
   "scripts": {
