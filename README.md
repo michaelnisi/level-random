@@ -31,8 +31,8 @@ levelup('/tmp/level-random.db', function (er, db) {
 `Object` passed to Transform stream constructor.
 
 - `db` The mandatory [LevelUP](https://github.com/rvagg/node-levelup) instance
-- `errorIfNotFound` Set this `Boolean` `true` to error if a key is not found; defaults `false`
-- `fillCache` Set this `Boolean` `false` to not fill LevelDB's LRU-cache; defaults `true`
+- `errorIfNotFound` Emit error if key cannot be found `Boolean=false`
+- `fillCache` Fill LevelDB's LRU-cache `Boolean=true`
 
 ## exports
 
@@ -43,7 +43,7 @@ var lr = require('level-random')
 lr(opts())
 ```
 
-Although, in general, we leverage the lexicographical sort order of [LevelDB](http://leveldb.org/) keys (to stream ranges), occasionally we encounter the oddball use case which requires to read randomly from the store. To read a bunch of unsorted values for random keys this module might be useful.
+At large, of course, we leverage the lexicographical sort order of [LevelDB](http://leveldb.org/) keys (to stream ranges), occasionally though we encounter the oddball use case which requires to read randomly from the store. To read a bunch of unsorted values for random keys this module might be useful.
 
 ## Installation
 

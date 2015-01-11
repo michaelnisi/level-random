@@ -22,7 +22,7 @@ test('setup', function (t) {
 })
 
 test('read', function (t) {
-  t.plan(2)
+  t.plan(3)
   var keys = ['a', 'b', 'x', 'c']
   var found = []
   var errors = []
@@ -39,18 +39,21 @@ test('read', function (t) {
   values.on('finish', function () {
     t.is(found.length, 3)
     t.is(errors.length, 1)
+    t.is(values.db, null)
     t.end()
   })
   values.write(keys.shift())
 })
 
 test('pipe', function (t) {
-  t.plan(1)
+  t.plan(2)
+  var values = lr({ db:db, encoding:'utf8' })
   es.readArray(['x', 'a', 'b', 'c'])
-    .pipe(lr({ db:db, encoding:'utf8' }))
+    .pipe(values)
     .pipe(es.writeArray(function (er, found) {
       var wanted = ['A', 'B', 'C']
       t.deepEqual(found, wanted)
+      t.is(values.db, null)
       t.end()
     }))
 })

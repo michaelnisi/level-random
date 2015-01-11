@@ -33,3 +33,8 @@ Random.prototype._transform = function (chunk, enc, cb) {
     cb(er)
   })
 }
+
+Random.prototype._flush = function (cb) {
+  this.db = null
+  cb()
+}
