@@ -21,12 +21,20 @@ test('setup', function (t) {
   })
 })
 
+test('defaults', function (t) {
+  t.ok(!lr({db:db}).opts.fillCache)
+  t.ok(lr({db:db,fillCache:true}).opts.fillCache)
+  t.ok(!lr({db:db}).errorIfNotExists)
+  t.ok(lr({db:db,errorIfNotExists:true}).errorIfNotExists)
+  t.end()
+})
+
 test('read', function (t) {
   t.plan(3)
   var keys = ['a', 'b', 'x', 'c']
   var found = []
   var errors = []
-  var values = lr({ db:db, errorIfNotFound: true })
+  var values = lr({ db:db, errorIfNotExists: true })
   values.on('readable', function () {
     var chunk
     while (null !== (chunk = values.read())) { found.push(chunk) }
