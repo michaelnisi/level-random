@@ -35,14 +35,25 @@ test('read', function (t) {
   var found = []
   var errors = []
   var values = lr({ db:db, errorIfNotExists: true })
+  var ok
+  function write () {
+    if (keys.length) {
+      ok = values.write(keys.shift())
+    } else {
+      values.end()
+    }
+    if (!ok) values.once('drain', write)
+  }
   values.on('readable', function () {
     var chunk
-    while (null !== (chunk = values.read())) { found.push(chunk) }
-    keys.length ? values.write(keys.shift()) : values.end()
+    while (null !== (chunk = values.read())) {
+      found.push(chunk)
+    }
+    write()
   })
   values.on('error', function (er) {
     errors.push(er)
-    values.resume()
+    write()
   })
   values.on('finish', function () {
     t.is(found.length, 3)
