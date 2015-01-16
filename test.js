@@ -29,50 +29,62 @@ test('defaults', function (t) {
   t.end()
 })
 
+function someKeys () {
+  return ['a', 'b', 'x', 'c'].sort(function () {
+    return .5 - Math.random()
+  })
+}
+
 test('read', function (t) {
-  t.plan(3)
-  var keys = ['a', 'b', 'x', 'c']
+  var keys = someKeys()
+  var wanted = keys.filter(function (k) {
+    return k !== 'x'
+  }).map(function (k) {
+    return k.toUpperCase()
+  })
   var found = []
   var errors = []
-  var values = lr({ db:db, errorIfNotExists: true })
-  var ok
+  var stream = lr({ db:db, encoding: 'utf8', errorIfNotExists: true })
   function write () {
-    if (keys.length) {
-      ok = values.write(keys.shift())
-    } else {
-      values.end()
+    var ok = true
+    while (ok && keys.length) {
+      ok = stream.write(keys.shift())
     }
-    if (!ok) values.once('drain', write)
+    keys.length ? stream.once('drain', write) : stream.end()
   }
-  values.on('readable', function () {
+  function read () {
     var chunk
-    while (null !== (chunk = values.read())) {
+    while (null !== (chunk = stream.read())) {
       found.push(chunk)
     }
-    write()
+  }
+  stream.on('readable', function () {
+    read()
   })
-  values.on('error', function (er) {
+  stream.on('error', function (er) {
     errors.push(er)
-    write()
+    read()
   })
-  values.on('finish', function () {
-    t.is(found.length, 3)
+  stream.on('end', function () {
+    t.deepEqual(found, wanted)
     t.is(errors.length, 1)
-    t.is(values.db, null)
+    t.is(stream.db, null)
     t.end()
   })
-  values.write(keys.shift())
+  write()
 })
 
 test('pipe', function (t) {
   t.plan(2)
-  var values = lr({ db:db, encoding:'utf8' })
-  es.readArray(['x', 'a', 'b', 'c'])
-    .pipe(values)
+  var stream = lr({ db:db, encoding:'utf8' })
+  es.readArray(someKeys())
+    .pipe(stream)
     .pipe(es.writeArray(function (er, found) {
-      var wanted = ['A', 'B', 'C']
+      var wanted = found.map(function (k) {
+        return k.toUpperCase()
+      })
       t.deepEqual(found, wanted)
-      t.is(values.db, null)
+      t.is(stream.db, null)
       t.end()
     }))
 })
