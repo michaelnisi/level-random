@@ -30,7 +30,7 @@ function Random (opts) {
 Random.prototype._transform = function (chunk, enc, cb) {
   var me = this
   this.db.get(chunk, this.opts, function (er, value) {
-    if (!me.errorIfNotExists) er = null
+    er = !!er && er.notFound && !me.errorIfNotExists ? null : er
     if (value !== null && value !== undefined) me.push(value)
     if (er) me.emit('error', er)
     cb()
