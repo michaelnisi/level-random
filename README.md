@@ -31,7 +31,7 @@ levelup('/tmp/level-random.db', function (er, db) {
 `Object` passed to Transform stream constructor.
 
 - `db` The mandatory [LevelUP](https://github.com/rvagg/node-levelup) instance
-- `errorIfNotExists` Emit error if key does not exist `Boolean=false`
+- `errorIfNotFound` Emit error if key is not found `Boolean=false`
 - `fillCache` Fill LevelDB's LRU-cache `Boolean=false`
 
 ## exports
