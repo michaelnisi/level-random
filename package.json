@@ -1,6 +1,6 @@
 {
   "name": "level-random",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "read randomly from leveldb",
   "main": "index.js",
   "scripts": {
@@ -24,7 +24,8 @@
   },
   "homepage": "https://github.com/michaelnisi/level-random",
   "dependencies": {
-    "levelup": "^0.18.6"
+    "levelup": "^0.18.6",
+    "readable-stream": "^1.0.33"
   },
   "devDependencies": {
     "event-stream": "^3.2.1",

@@ -3,7 +3,7 @@
 
 module.exports = Random
 
-var stream = require('stream')
+var stream = require('readable-stream')
 var util = require('util')
 
 function defaults (opts) {
