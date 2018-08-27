@@ -1,4 +1,4 @@
-# level-random - read randomly
+# level-random - read random levelup values
 
 The **level-random** [Node.js](http://nodejs.org/) module implements a [Transform](http://nodejs.org/api/stream.html#stream_class_stream_transform_1) stream to read values for random keys in an [LevelUP](https://github.com/rvagg/node-levelup) instance.
 
