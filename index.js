@@ -1,10 +1,11 @@
+'use-strict'
 
-// level-random - read randomly
+// level-random - randomly read from levelup
 
 module.exports = Random
 
-var stream = require('readable-stream')
-var util = require('util')
+const stream = require('readable-stream')
+const util = require('util')
 
 function defaults (opts) {
   opts = opts || Object.create(null)
@@ -28,15 +29,14 @@ function Random (opts) {
 }
 
 Random.prototype._transform = function (chunk, enc, cb) {
-  var me = this
-  this.db.get(chunk, this.opts, function (er, value) {
-    var notFound = !!er && er.notFound
+  this.db.get(chunk, this.opts, (er, value) => {
+    const notFound = !!er && er.notFound
     if (notFound) {
-      if (me.errorIfNotFound) me.emit('error', er)
+      if (this.errorIfNotFound) this.emit('error', er)
       er = null
     }
     if (value !== null && value !== undefined) {
-      me.push(value)
+      this.push(value)
     }
     cb(er)
   })
