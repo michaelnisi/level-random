@@ -1,7 +1,7 @@
 {
   "name": "level-random",
   "version": "3.0.0",
-  "description": "read randomly from levelup",
+  "description": "read random levelup values",
   "main": "index.js",
   "scripts": {
     "pretest": "standard",
