@@ -1,4 +1,3 @@
-
 # level-random - read randomly
 
 The **level-random** [Node.js](http://nodejs.org/) module implements a [Transform](http://nodejs.org/api/stream.html#stream_class_stream_transform_1) stream to read values for random keys in an [LevelUP](https://github.com/rvagg/node-levelup) instance.
@@ -8,18 +7,22 @@ The **level-random** [Node.js](http://nodejs.org/) module implements a [Transfor
 ## Usage
 
 ```js
-var levelup = require('levelup')
-var lr = require('level-random')
+const leveldown = require('leveldown')
+const levelup = require('levelup')
+const lr = require('level-random')
 
-levelup('/tmp/level-random.db', function (er, db) {
+levelup(leveldown('/tmp/level-random-example.db'), (er, db) => {
+  if (er) throw er
+
   db.batch([
-    { type: 'put', key: 'a', value: 'hey\n' }
-  , { type: 'put', key: 'b', value: 'you\n' }
-  ], function (er) {
-    var values = lr({ db: db })
+    { type: 'put', key: 'a', value: 'hey\n' },
+    { type: 'put', key: 'c', value: 'you\n' }
+  ], (er) => {
+    const values = lr({ db: db })
     values.pipe(process.stdout)
     values.write('a')
-    values.end('b')
+    values.write('b') // optionally emitting an error
+    values.end('c')
   })
 })
 ```
