@@ -1,8 +1,9 @@
+[![Build Status](https://secure.travis-ci.org/michaelnisi/level-random.svg)](http://travis-ci.org/michaelnisi/level-random)
+[![Coverage Status](https://coveralls.io/repos/github/michaelnisi/level-random/badge.svg?branch=master)](https://coveralls.io/github/michaelnisi/level-random?branch=master)
+
 # level-random - read random levelup values
 
-The **level-random** [Node.js](http://nodejs.org/) module implements a [Transform](http://nodejs.org/api/stream.html#stream_class_stream_transform_1) stream to read values for random keys in an [levelup](https://github.com/rvagg/node-levelup) instance.
-
-[![Build Status](https://secure.travis-ci.org/michaelnisi/level-random.svg)](http://travis-ci.org/michaelnisi/level-random)
+The **level-random** [Node.js](http://nodejs.org/) module implements a [Transform](http://nodejs.org/api/stream.html#stream_class_stream_transform_1) stream for reading values of random keys in [levelup](https://github.com/rvagg/node-levelup).
 
 ## Usage
 
@@ -27,7 +28,7 @@ levelup(leveldown('/tmp/level-random-example.db'), (er, db) => {
 })
 ```
 
-## types
+## Types
 
 ### opts()
 
@@ -37,7 +38,7 @@ levelup(leveldown('/tmp/level-random-example.db'), (er, db) => {
 - `errorIfNotFound` Emit error if key is not found `Boolean=false`
 - `fillCache` Fill LevelDB's LRU-cache `Boolean=false`
 
-## exports
+## Exports
 
 **level-random** exports a sole function that returns a Transform stream which transforms keys to values.
 
