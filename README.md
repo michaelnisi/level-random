@@ -13,7 +13,7 @@ Reading values for random keys from [levelup](https://github.com/rvagg/node-leve
 const encode = require('encoding-down')
 const leveldown = require('leveldown')
 const levelup = require('levelup')
-const lr = require('./')
+const lr = require('level-random')
 const { pipeline, Writable } = require('readable-stream')
 
 const db = levelup(encode(leveldown('/tmp/level-random-example.db')))
