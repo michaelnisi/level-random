@@ -28,7 +28,7 @@ function Random (opts) {
 
   opts = defaults(opts)
 
-  debug('initializing: %p', opts)
+  debug('initializing: %o', opts)
   stream.Transform.call(this, opts)
 
   this.db = opts.db
