@@ -7,7 +7,7 @@ The **level-random** [Node.js](http://nodejs.org/) module implements a [Transfor
 
 ## Usage
 
-Reading values for random keys from levelup.
+Reading values for random keys from [levelup](https://github.com/rvagg/node-levelup).
 
 ```js
 const encode = require('encoding-down')
@@ -72,7 +72,7 @@ var lr = require('level-random')
 lr(opts())
 ```
 
-At large, of course, we leverage the lexicographical sort order of keys in [LevelDB](http://leveldb.org/) to very efficiently stream ranges. Occasionally though, we encounter the oddball use case, requiring us to read randomly from the store. This module might be useful for streaming random values from the store.
+At large, of course, we leverage the lexicographical sort order of keys in log structured databases to very efficiently stream ranges. Occasionally though, we have to read randomly from the store. This module provides a value stream for arbitrary keys, ignoring non-existing keys by default.
 
 ## Installation
 
