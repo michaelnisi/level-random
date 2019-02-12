@@ -1,20 +1,37 @@
-// A quick example of reading random values with level-random.
+// example - read random values with level-random
 
+const encode = require('encoding-down')
 const leveldown = require('leveldown')
 const levelup = require('levelup')
 const lr = require('./')
+const { pipeline, Writable } = require('readable-stream')
 
-levelup(leveldown('/tmp/level-random-example.db'), (er, db) => {
-  if (er) throw er
+const db = levelup(encode(leveldown('/tmp/level-random-example.db')))
+const keys = ['a', 'b', 'c']
 
-  db.batch([
-    { type: 'put', key: 'a', value: 'hey\n' },
-    { type: 'put', key: 'c', value: 'you\n' }
-  ], (er) => {
-    const values = lr({ db: db })
-    values.pipe(process.stdout)
-    values.write('a')
-    values.write('b') // optionally emitting an error
-    values.end('c')
+// Putting our values except for 'b', before reading with level-random
+// and logging values to the console.
+db.batch([
+  { type: 'put', key: keys[0], value: 'hey' },
+  { type: 'put', key: keys[2], value: 'you' }
+], er => {
+  const values = lr({ db: db })
+
+  // Setting up our pipeline.
+  pipeline(values, new Writable({
+    write (chunk, enc, cb) {
+      console.log('%s', chunk)
+      cb()
+    }
+  }), (er) => {
+    if (er) throw er
+    console.log('ok')
   })
+
+  // Reading values for all keys.
+  keys.forEach(key => {
+    values.write(key)
+  })
+
+  values.end()
 })

@@ -13,18 +13,18 @@ const store = leveldown(loc)
 const db = levelup(store)
 
 function puts () {
-  return ['a', 'b', 'c'].map(function (key) {
+  return ['a', 'b', 'c'].map(key => {
     return { type: 'put', key: key, value: key.toUpperCase() }
   })
 }
 
-test('setup', function (t) {
-  db.batch(puts(), function (er) {
+test('setup', t => {
+  db.batch(puts(), er => {
     t.end()
   })
 })
 
-test('defaults', function (t) {
+test('defaults', t => {
   t.ok(!lr({db: db}).opts.fillCache)
   t.ok(lr({db: db, fillCache: true}).opts.fillCache)
   t.ok(!lr({db: db}).errorIfNotFound)
@@ -33,45 +33,56 @@ test('defaults', function (t) {
 })
 
 function someKeys () {
-  return ['a', 'b', 'x', 'c'].sort(function () {
+  return ['a', 'b', 'x', 'c'].sort(() => {
     return 0.5 - Math.random()
   })
 }
 
 function read (t, keys, ec, cb) {
-  var wanted = keys.filter(function (k) {
+  const wanted = keys.filter(k => {
     return k !== 'x'
-  }).map(function (k) {
+  }).map(k => {
     return k.toUpperCase()
   })
-  var found = []
-  var errors = []
-  var stream = lr({ db: db, encoding: 'utf8', errorIfNotFound: true })
+
+  const found = []
+  const errors = []
+
+  const stream = lr({ db: db, encoding: 'utf8', errorIfNotFound: true })
+
   function write () {
-    var ok = true
+    let ok = true
+
     while (ok && keys.length) {
       ok = stream.write(keys.shift())
     }
+
     keys.length ? stream.once('drain', write) : stream.end()
   }
+
   function read () {
-    var chunk
+    let chunk
+
     while ((chunk = stream.read()) !== null) {
       found.push(chunk)
     }
   }
-  stream.on('readable', function () {
+
+  stream.on('readable', () => {
     read()
   })
-  stream.on('error', function (er) {
+
+  stream.on('error', er => {
     errors.push(er)
   })
-  stream.on('end', function () {
+
+  stream.on('end', () => {
     t.deepEqual(found, wanted)
     t.is(errors.length, ec)
     t.is(stream.db, null)
     if (cb) cb()
   })
+
   write()
 }
 
@@ -89,35 +100,43 @@ test('read', (t) => {
   })
 })
 
-test('pipe sans error', function (t) {
+test('pipe sans error', (t) => {
   t.plan(2)
-  var stream = lr({ db: db, encoding: 'utf8' })
+
+  const stream = lr({ db: db, encoding: 'utf8' })
+
   es.readArray(someKeys())
     .pipe(stream)
-    .pipe(es.writeArray(function (er, found) {
-      var wanted = found.map(function (k) {
+    .pipe(es.writeArray((er, found) => {
+      const wanted = found.map(k => {
         return k.toUpperCase()
       })
+
       t.deepEqual(found, wanted)
       t.is(stream.db, null)
       t.end()
     }))
 })
 
-test('data event with error', function (t) {
-  var stream = lr({ db: db, encoding: 'utf8', errorIfNotFound: true })
-  var found = []
-  var errors = []
-  stream.on('data', function (chunk) {
+test('data event with error', t => {
+  const stream = lr({ db: db, encoding: 'utf8', errorIfNotFound: true })
+
+  const found = []
+  const errors = []
+
+  stream.on('data', chunk => {
     found.push(chunk)
   })
-  stream.on('error', function (er) {
+
+  stream.on('error', er => {
     errors.push(er)
   })
-  ;['a', 'b', 'c', 'x'].forEach(function (k) {
+
+  ;['a', 'b', 'c', 'x'].forEach(k => {
     stream.write(k)
   })
-  stream.end(function () {
+
+  stream.end(() => {
     t.deepEqual(found, ['A', 'B', 'C'])
     t.is(errors.length, 1)
     t.is(stream.db, null)
@@ -125,12 +144,12 @@ test('data event with error', function (t) {
   })
 })
 
-test('teardown', function (t) {
+test('teardown', t => {
   t.plan(2)
   db.close()
   t.ok(db.isClosed(), 'should be closed')
-  rimraf(loc, function (er) {
-    fs.stat(loc, function (er) {
+  rimraf(loc, er => {
+    fs.stat(loc, er => {
       t.ok(er, 'should be removed')
       t.end()
     })
