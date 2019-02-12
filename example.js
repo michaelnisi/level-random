@@ -1,3 +1,5 @@
+'use-strict'
+
 // example - read random values with level-random
 
 const encode = require('encoding-down')
