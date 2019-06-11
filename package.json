@@ -26,18 +26,18 @@
   },
   "homepage": "https://github.com/michaelnisi/level-random",
   "dependencies": {
-    "encoding-down": "^6.0.1",
-    "levelup": "^4.0.0",
-    "readable-stream": "^3.1.1"
+    "encoding-down": "^6.0.2",
+    "levelup": "^4.0.2",
+    "readable-stream": "^3.4.0"
   },
   "devDependencies": {
-    "event-stream": "^3.3.4",
-    "leveldown": "^4.0.1",
-    "rimraf": "^2.6.2",
-    "standard": "^11.0.1",
-    "tap": "^12.5.2"
+    "event-stream": "^4.0.1",
+    "leveldown": "^5.1.0",
+    "rimraf": "^2.6.3",
+    "standard": "^12.0.1",
+    "tap": "^14.2.2"
   },
   "engines": {
-    "node": ">=6"
+    "node": ">=8"
   }
 }

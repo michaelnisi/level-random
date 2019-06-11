@@ -25,10 +25,10 @@ test('setup', t => {
 })
 
 test('defaults', t => {
-  t.ok(!lr({db: db}).opts.fillCache)
-  t.ok(lr({db: db, fillCache: true}).opts.fillCache)
-  t.ok(!lr({db: db}).errorIfNotFound)
-  t.ok(lr({db: db, errorIfNotFound: true}).errorIfNotFound)
+  t.ok(!lr({ db: db }).opts.fillCache)
+  t.ok(lr({ db: db, fillCache: true }).opts.fillCache)
+  t.ok(!lr({ db: db }).errorIfNotFound)
+  t.ok(lr({ db: db, errorIfNotFound: true }).errorIfNotFound)
   t.end()
 })
 
