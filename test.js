@@ -35,11 +35,15 @@ function someKeys () {
 test('read', (t) => {
   function run (fixtures, cb) {
     let { keys } = fixtures.pop()
-    let wanted = keys.flatMap(k => {
-      if (k === 'x') return []
-      return k.toUpperCase()
-    })
+
     let found = []
+
+    // Poor man’s flatMap.
+    let wanted = keys.reduce((acc, k) => {
+      if (k === 'x') return acc
+      acc.push(k.toUpperCase())
+      return acc
+    }, [])
 
     pipeline(
       new Readable({
