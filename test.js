@@ -12,6 +12,7 @@ const loc = '/tmp/level-random-' + Math.floor(Math.random() * (1 << 24))
 const store = leveldown(loc)
 const db = levelup(store)
 
+// Returns a put batch where values are upper case keys.
 function puts () {
   return ['a', 'b', 'c'].map(key => {
     return { type: 'put', key: key, value: key.toUpperCase() }
@@ -20,6 +21,7 @@ function puts () {
 
 test('setup', t => {
   db.batch(puts(), er => {
+    if (er) throw er
     t.end()
   })
 })
@@ -30,100 +32,55 @@ function someKeys () {
   })
 }
 
-function read (t, keys, ec, cb) {
-  const wanted = keys.filter(k => {
-    return k !== 'x'
-  }).map(k => {
-    return k.toUpperCase()
-  })
-
-  const found = []
-  const errors = []
-
-  const stream = lr({ db: db, encoding: 'utf8', errorIfNotFound: true })
-
-  function write () {
-    let ok = true
-
-    while (ok && keys.length) {
-      ok = stream.write(keys.shift())
-    }
-
-    keys.length ? stream.once('drain', write) : stream.end()
-  }
-
-  function read () {
-    let chunk
-
-    while ((chunk = stream.read()) !== null) {
-      found.push(chunk)
-    }
-  }
-
-  stream.on('readable', () => {
-    read()
-  })
-
-  stream.on('error', er => {
-    errors.push(er)
-  })
-
-  stream.on('end', () => {
-    t.deepEqual(found, wanted)
-    t.is(errors.length, ec)
-    if (cb) cb()
-  })
-
-  write()
-}
-
 test('read', (t) => {
-  [
-    { keys: ['a', 'b', 'c'], ec: 0 },
-    { keys: ['a', 'b', 'c', 'x'], ec: 1 },
-    { keys: ['x', 'a', 'b', 'c'], ec: 1 },
-    { keys: ['a', 'x', 'b', 'c'], ec: 1 },
-    { keys: ['a', 'x', 'x', 'c'], ec: 2 }
-  ].forEach((s, i, arr) => {
-    read(t, s.keys, s.ec, () => {
-      if (i === arr.length - 1) t.end()
+  function run (fixtures, cb) {
+    let { keys } = fixtures.pop()
+    let wanted = keys.flatMap(k => {
+      if (k === 'x') return []
+      return k.toUpperCase()
     })
-  })
-})
+    let found = []
 
-test('succeeding pipeline', (t) => {
-  let keys = someKeys()
-  let found = []
-
-  pipeline(
-    new Readable({
-      read (size) {
-        let key = keys.shift()
-        if (!key) {
-          return this.push(null)
+    pipeline(
+      new Readable({
+        read (length) {
+          this.push(keys.shift() || null)
         }
-        this.push(key)
+      }),
+      lr({ db: db, encoding: 'utf8' }),
+      new Writable({
+        write (chunk, enc, cb) {
+          found.push(chunk)
+          cb()
+        },
+        decodeStrings: false
+      }),
+      er => {
+        if (er) throw er
+
+        t.deepEqual(found, wanted)
+
+        if (fixtures.length === 0) {
+          return cb(er)
+        }
+
+        run(fixtures, cb)
       }
-    }),
-    lr({ db: db, encoding: 'utf8' }),
-    new Writable({
-      write (chunk, enc, cb) {
-        found.push(chunk)
-        cb()
-      },
-      decodeStrings: false
-    }),
-    err => {
-      if (err) throw err
+    )
+  }
 
-      const wanted = found.map(k => {
-        return k.toUpperCase()
-      })
-
-      t.deepEqual(found, wanted)
-      t.end()
-    }
-  )
+  run([
+    { keys: ['a'] },
+    { keys: ['a', 'b'] },
+    { keys: ['a', 'b', 'c'] },
+    { keys: ['a', 'x'] },
+    { keys: ['a', 'x', 'b', 'x'] },
+    { keys: ['a', 'x', 'b', 'x', 'c', 'x'] },
+    { keys: someKeys() }
+  ], er => {
+    if (er) throw er
+    t.end()
+  })
 })
 
 test('data event with error', t => {
