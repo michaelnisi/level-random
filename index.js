@@ -17,7 +17,9 @@ function internals (opts) {
   return copy
 }
 
-// Returns a Transform stream with select `opts`.
+// Returns a stream to which you write LevelDB keys while you are reading
+// their values. The `errorIfNotFound` option controls if non-existing keys
+// should be ignored.
 function createStream (opts) {
   const { db, errorIfNotFound, fillCache } = internals(opts)
 
