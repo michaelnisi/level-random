@@ -2,62 +2,43 @@
 
 // level-random - randomly read from levelup
 
-module.exports = Random
+const { Transform } = require('readable-stream')
+const { debuglog } = require('util')
 
-const debug = require('util').debuglog('level-random')
-const stream = require('readable-stream')
-const util = require('util')
+debuglog('level-random')
 
-function defaults (opts) {
-  opts = opts || Object.create(null)
+// Returns default options from `opts` copying it.
+function internals (opts) {
+  const copy = Object.assign({}, opts)
 
-  opts.fillCache = !!opts.fillCache
-  opts.errorIfNotFound = !!opts.errorIfNotFound
+  copy.fillCache = !!copy.fillCache
+  copy.errorIfNotFound = !!copy.errorIfNotFound
 
-  return opts
+  return copy
 }
 
-function GetOpts (fillCache) {
-  this.fillCache = fillCache
-}
+// Returns a Transform stream with select `opts`.
+function createStream (opts) {
+  const { db, errorIfNotFound, fillCache } = internals(opts)
 
-util.inherits(Random, stream.Transform)
+  return new Transform(Object.assign({
+    transform (chunk, enc, cb) {
+      db.get(chunk, { fillCache: fillCache }, (er, value) => {
+        const notFound = !!er && er.notFound
 
-function Random (opts) {
-  if (!(this instanceof Random)) return new Random(opts)
+        if (notFound) {
+          if (errorIfNotFound) this.emit('error', er)
+          er = null
+        }
 
-  opts = defaults(opts)
+        if (value !== null && value !== undefined) {
+          this.push(value)
+        }
 
-  debug('initializing: %o', opts)
-  stream.Transform.call(this, opts)
-
-  this.db = opts.db
-  this.errorIfNotFound = opts.errorIfNotFound
-  this.opts = new GetOpts(opts.fillCache)
-}
-
-Random.prototype._transform = function (chunk, enc, cb) {
-  debug('transforming: %s', chunk)
-  this.db.get(chunk, this.opts, (er, value) => {
-    const notFound = !!er && er.notFound
-
-    if (notFound) {
-      debug('not found')
-      if (this.errorIfNotFound) this.emit('error', er)
-      er = null
+        cb(er)
+      })
     }
-
-    if (value !== null && value !== undefined) {
-      debug('pushing: %s', value)
-      this.push(value)
-    }
-
-    cb(er)
-  })
+  }, opts))
 }
 
-Random.prototype._flush = function (cb) {
-  debug('flushing')
-  this.db = null
-  cb()
-}
+module.exports = createStream

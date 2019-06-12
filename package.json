@@ -1,11 +1,11 @@
 {
   "name": "level-random",
-  "version": "3.0.2",
+  "version": "4.0.0",
   "description": "read random levelup values",
   "main": "index.js",
   "scripts": {
-    "pretest": "standard",
-    "test": "tap test.js --cov",
+    "pretest": "standard --fix",
+    "test": "tap test.js -Rtap --cov",
     "posttest": "rm -rf /tmp/level-random-[1-9]*"
   },
   "repository": {
@@ -19,7 +19,7 @@
     "transform",
     "stream"
   ],
-  "author": "Michael Nisi <michael.nisi@gmail.com>",
+  "author": "Michael Nisi <https://troubled.pro>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/michaelnisi/level-random/issues"
@@ -31,13 +31,12 @@
     "readable-stream": "^3.4.0"
   },
   "devDependencies": {
-    "event-stream": "^4.0.1",
     "leveldown": "^5.1.0",
     "rimraf": "^2.6.3",
     "standard": "^12.0.1",
     "tap": "^14.2.2"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=10"
   }
 }

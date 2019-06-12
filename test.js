@@ -1,12 +1,12 @@
 'use strict'
 
-const es = require('event-stream')
 const fs = require('fs')
+const leveldown = require('leveldown')
 const levelup = require('levelup')
 const lr = require('./')
 const rimraf = require('rimraf')
 const test = require('tap').test
-const leveldown = require('leveldown')
+const { pipeline, Readable, Writable } = require('readable-stream')
 
 const loc = '/tmp/level-random-' + Math.floor(Math.random() * (1 << 24))
 const store = leveldown(loc)
@@ -22,14 +22,6 @@ test('setup', t => {
   db.batch(puts(), er => {
     t.end()
   })
-})
-
-test('defaults', t => {
-  t.ok(!lr({ db: db }).opts.fillCache)
-  t.ok(lr({ db: db, fillCache: true }).opts.fillCache)
-  t.ok(!lr({ db: db }).errorIfNotFound)
-  t.ok(lr({ db: db, errorIfNotFound: true }).errorIfNotFound)
-  t.end()
 })
 
 function someKeys () {
@@ -79,7 +71,6 @@ function read (t, keys, ec, cb) {
   stream.on('end', () => {
     t.deepEqual(found, wanted)
     t.is(errors.length, ec)
-    t.is(stream.db, null)
     if (cb) cb()
   })
 
@@ -100,22 +91,39 @@ test('read', (t) => {
   })
 })
 
-test('pipe sans error', (t) => {
-  t.plan(2)
+test('succeeding pipeline', (t) => {
+  let keys = someKeys()
+  let found = []
 
-  const stream = lr({ db: db, encoding: 'utf8' })
+  pipeline(
+    new Readable({
+      read (size) {
+        let key = keys.shift()
+        if (!key) {
+          return this.push(null)
+        }
+        this.push(key)
+      }
+    }),
+    lr({ db: db, encoding: 'utf8' }),
+    new Writable({
+      write (chunk, enc, cb) {
+        found.push(chunk)
+        cb()
+      },
+      objectMode: true
+    }),
+    err => {
+      if (err) throw err
 
-  es.readArray(someKeys())
-    .pipe(stream)
-    .pipe(es.writeArray((er, found) => {
       const wanted = found.map(k => {
         return k.toUpperCase()
       })
 
       t.deepEqual(found, wanted)
-      t.is(stream.db, null)
       t.end()
-    }))
+    }
+  )
 })
 
 test('data event with error', t => {
@@ -139,7 +147,6 @@ test('data event with error', t => {
   stream.end(() => {
     t.deepEqual(found, ['A', 'B', 'C'])
     t.is(errors.length, 1)
-    t.is(stream.db, null)
     t.end()
   })
 })
