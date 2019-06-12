@@ -1,39 +1,39 @@
 'use-strict'
 
-// example - read random values with level-random
+// example - read values for keys ignoring missing key
 
 const encode = require('encoding-down')
 const leveldown = require('leveldown')
 const levelup = require('levelup')
 const lr = require('./')
-const { pipeline, Writable } = require('readable-stream')
+const { pipeline, Readable, Writable } = require('readable-stream')
 
 const db = levelup(encode(leveldown('/tmp/level-random-example.db')))
-const keys = ['a', 'b', 'c']
 
-// Putting our values except for 'b', before reading with level-random
-// and logging values to the console.
 db.batch([
-  { type: 'put', key: keys[0], value: 'hey' },
-  { type: 'put', key: keys[2], value: 'you' }
+  { type: 'put', key: 'a', value: 'you' },
+  { type: 'put', key: 'c', value: 'are' }
 ], er => {
-  const values = lr({ db: db })
+  if (er) throw er
 
-  // Setting up our pipeline.
-  pipeline(values, new Writable({
-    write (chunk, enc, cb) {
-      console.log('%s', chunk)
-      cb()
+  const keys = ['a', 'b', 'c']
+
+  pipeline(
+    new Readable({
+      read (length) {
+        this.push(keys.shift() || null)
+      }
+    }),
+    lr({ db: db }),
+    new Writable({
+      write (chunk, enc, cb) {
+        console.log('%s', chunk)
+        cb()
+      }
+    }),
+    er => {
+      if (er) throw er
+      console.log('ok')
     }
-  }), (er) => {
-    if (er) throw er
-    console.log('ok')
-  })
-
-  // Reading values for all keys.
-  keys.forEach(key => {
-    values.write(key)
-  })
-
-  values.end()
+  )
 })

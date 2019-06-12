@@ -111,7 +111,7 @@ test('succeeding pipeline', (t) => {
         found.push(chunk)
         cb()
       },
-      objectMode: true
+      decodeStrings: false
     }),
     err => {
       if (err) throw err
