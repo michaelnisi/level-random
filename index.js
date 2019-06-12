@@ -5,11 +5,11 @@
 const { Transform } = require('readable-stream')
 const { debuglog } = require('util')
 
-debuglog('level-random')
+const debug = debuglog('level-random')
 
 // Returns default options from `opts` copying it.
 function internals (opts) {
-  const copy = Object.assign({}, opts)
+  const copy = { ...opts }
 
   copy.fillCache = !!copy.fillCache
   copy.errorIfNotFound = !!copy.errorIfNotFound
@@ -25,6 +25,7 @@ function createStream (opts) {
 
   return new Transform(Object.assign({
     transform (chunk, enc, cb) {
+      debug('transforming: %o', arguments)
       db.get(chunk, { fillCache: fillCache }, (er, value) => {
         const notFound = !!er && er.notFound
 
